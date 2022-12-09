@@ -3,7 +3,7 @@ services:
   postgres-gorm:
     image: postgres:13
     ports:
-      - '5432:5432'
+      - '5433:5432'
     restart: always
     environment:
       - POSTGRES_USER=postgres

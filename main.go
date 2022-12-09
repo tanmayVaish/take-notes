@@ -1,11 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"take-notes/models"
+	"take-notes/routes"
 	"take-notes/storage"
 
+	"github.com/gofiber/fiber"
 	"github.com/joho/godotenv"
 )
 
@@ -13,8 +16,6 @@ func main() {
 
 	// declare variable to hold error
 	var err error
-	// declare variable to hold database connection
-	var db *storage.DB
 
 	// Load .env file
 	err = godotenv.Load()
@@ -33,15 +34,25 @@ func main() {
 	}
 
 	// Connect to the database
-	db, err = storage.NewConnection(config)
+	db, err := storage.NewConnection(config)
 	if err != nil {
 		log.Fatal("Error connecting to database")
 	}
 
+	// Migrate the database
 	err = models.MigrateNotes(db)
-
 	if err != nil {
 		log.Fatal("Error migrating database")
 	}
+	fmt.Println("Migrated database")
 
+	app := fiber.New()
+
+	r := routes.Route{
+		DB: db,
+	}
+
+	r.SetupRoutes(app)
+
+	app.Listen(3000)
 }
