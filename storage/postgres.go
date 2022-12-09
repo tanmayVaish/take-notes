@@ -25,6 +25,6 @@ func NewConnection(cfg Config) (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(db, err)
+	// fmt.Println(db, err)
 	return db, nil
 }

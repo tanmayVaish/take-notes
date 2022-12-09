@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber"
 	"gorm.io/gorm"
 )
@@ -11,8 +13,12 @@ type Route struct {
 }
 
 type Note struct {
-	body string `json:"body"`
-	tag  string `json:"tag"`
+	Body string `json:"body"`
+	Tag  []Tag  `json:"tag"`
+}
+
+type Tag struct {
+	Name string `json:"name"`
 }
 
 func (r *Route) SetupRoutes(app *fiber.App) {
@@ -27,7 +33,15 @@ func (r *Route) SetupRoutes(app *fiber.App) {
 }
 
 func (r *Route) getNotes(c *fiber.Ctx) {
-	c.Send("get notes")
+	// Get all the notes from the database
+	var notes []Note
+	err := r.DB.Find(&notes)
+	if err.Error != nil {
+		c.Status(503).Send(err.Error)
+		return
+	}
+	// Send the notes as a response
+	c.JSON(notes)
 }
 
 func (r *Route) getNote(c *fiber.Ctx) {
@@ -40,6 +54,7 @@ func (r *Route) createNote(c *fiber.Ctx) {
 	err := c.BodyParser(&note)
 	if err != nil {
 		c.Status(503).Send(err)
+		fmt.Println("bodyparser", err)
 		return
 	}
 
@@ -49,6 +64,7 @@ func (r *Route) createNote(c *fiber.Ctx) {
 
 	if checkCreation.Error != nil {
 		c.Status(503).Send(checkCreation.Error)
+		fmt.Println("checkCreation", err)
 		return
 	}
 
