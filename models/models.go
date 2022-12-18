@@ -3,14 +3,14 @@ package models
 import "gorm.io/gorm"
 
 type Note struct {
-	ID   int    `json:"id" gorm:"autoIncrement"`
-	Body string `json:"body"`
-	Tag  []Tag  `gorm:"many2many:note_tags;" json:"tags"`
+	gorm.Model
+	Body string
+	Tags []Tag
 }
 
 type Tag struct {
-	ID   int    `json:"id" gorm:"autoIncrement"`
-	Name string `json:"name"`
+	gorm.Model
+	Name string
 }
 
 func MigrateNotes(db *gorm.DB) error {

@@ -14,7 +14,7 @@ type Route struct {
 
 type Note struct {
 	Body string `json:"body"`
-	Tag  []Tag  `json:"tag"`
+	Tags []Tag  `json:"tag"`
 }
 
 type Tag struct {
