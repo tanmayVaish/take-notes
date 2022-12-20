@@ -1,10 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
-	"take-notes/models"
 	"take-notes/routes"
 	"take-notes/storage"
 
@@ -38,13 +36,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Error connecting to database")
 	}
-
-	// Migrate the database
-	err = models.MigrateNotes(db)
-	if err != nil {
-		log.Fatal("Error migrating database")
-	}
-	fmt.Println("Migrated database")
 
 	app := fiber.New()
 

@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"fmt"
+	"take-notes/models"
 
 	"github.com/gofiber/fiber"
 	"gorm.io/gorm"
@@ -10,15 +10,6 @@ import (
 // Within this, we will define all the route methods.
 type Route struct {
 	DB *gorm.DB
-}
-
-type Note struct {
-	Body string `json:"body"`
-	Tags []Tag  `json:"tag"`
-}
-
-type Tag struct {
-	Name string `json:"name"`
 }
 
 func (r *Route) SetupRoutes(app *fiber.App) {
@@ -34,7 +25,7 @@ func (r *Route) SetupRoutes(app *fiber.App) {
 
 func (r *Route) getNotes(c *fiber.Ctx) {
 	// Get all the notes from the database
-	var notes []Note
+	var notes []models.Note
 	err := r.DB.Find(&notes)
 	if err.Error != nil {
 		c.Status(503).Send(err.Error)
@@ -49,28 +40,47 @@ func (r *Route) getNote(c *fiber.Ctx) {
 }
 
 func (r *Route) createNote(c *fiber.Ctx) {
-	var note Note
 
-	err := c.BodyParser(&note)
-	if err != nil {
+	var input struct {
+		Title string
+		Body  string
+		Tags  []struct {
+			Name string
+		}
+	}
+
+	if err := c.BodyParser(&input); err != nil {
 		c.Status(503).Send(err)
-		fmt.Println("bodyparser", err)
 		return
 	}
 
-	checkCreation := r.DB.Create(&note)
+	note := models.Note{
+		Title: input.Title,
+		Body:  input.Body,
+	}
 
-	// fmt.Println(checkCreation)
-
-	if checkCreation.Error != nil {
-		c.Status(503).Send(checkCreation.Error)
-		fmt.Println("checkCreation", err)
+	if err := r.DB.Create(&note).Error; err != nil {
+		c.Status(503).Send(err)
 		return
 	}
 
-	c.Status(201).JSON(&fiber.Map{
-		"message": "Note created successfully",
-	})
+	var tags []models.Tag
+
+	for _, tagName := range input.Tags {
+		var tag models.Tag
+		if err := r.DB.Where("name = ?", tagName.Name).FirstOrCreate(&tag, models.Tag{Name: tagName.Name}).Error; err != nil {
+			c.Status(503).Send(err)
+			return
+		}
+		tags = append(tags, tag)
+	}
+
+	if err := r.DB.Model(&note).Association("Tags").Replace(tags); err != nil {
+		c.Status(503).Send(err)
+		return
+	}
+
+	c.JSON(note)
 
 }
 

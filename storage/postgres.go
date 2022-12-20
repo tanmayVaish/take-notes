@@ -3,6 +3,8 @@ package storage
 import (
 	"fmt"
 
+	"take-notes/models"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -25,6 +27,13 @@ func NewConnection(cfg Config) (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	if err := db.AutoMigrate(&models.Note{}, &models.Tag{}); err != nil {
+		return nil, err
+	}
+
+	fmt.Println("Migrated database")
+
 	// fmt.Println(db, err)
 	return db, nil
 }
