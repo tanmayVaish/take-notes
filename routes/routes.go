@@ -16,23 +16,36 @@ func (r *Route) SetupRoutes(app *fiber.App) {
 
 	api := app.Group("/api")
 
-	api.Get("/notes", r.getNotes)
+	api.Get("/notes", r.getAllNotes)
+	api.Get("/tags", r.getAllTags)
 	api.Get("/notes/:id", r.getNote)
 	api.Post("/note", r.createNote)
 	api.Put("/notes/:id", r.updateNote)
 	api.Delete("/notes/:id", r.deleteNote)
 }
 
-func (r *Route) getNotes(c *fiber.Ctx) {
+func (r *Route) getAllNotes(c *fiber.Ctx) {
 	// Get all the notes from the database
 	var notes []models.Note
-	err := r.DB.Find(&notes)
+	err := r.DB.Preload("Tags").Find(&notes)
 	if err.Error != nil {
 		c.Status(503).Send(err.Error)
 		return
 	}
 	// Send the notes as a response
 	c.JSON(notes)
+}
+
+func (r *Route) getAllTags(c *fiber.Ctx) {
+	// Get all the tags from the database
+	var tags []models.Tag
+	err := r.DB.Find(&tags)
+	if err.Error != nil {
+		c.Status(503).Send(err.Error)
+		return
+	}
+	// Send the tags as a response
+	c.JSON(tags)
 }
 
 func (r *Route) getNote(c *fiber.Ctx) {
