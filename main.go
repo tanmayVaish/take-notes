@@ -6,6 +6,7 @@ import (
 	"take-notes/routes"
 	"take-notes/storage"
 
+	"github.com/gofiber/cors"
 	"github.com/gofiber/fiber"
 	"github.com/joho/godotenv"
 )
@@ -38,6 +39,8 @@ func main() {
 	}
 
 	app := fiber.New()
+
+	app.Use(cors.New())
 
 	r := routes.Route{
 		DB: db,

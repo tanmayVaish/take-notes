@@ -3,6 +3,7 @@ module take-notes
 go 1.19
 
 require (
+	github.com/gofiber/cors v0.2.2
 	github.com/gofiber/fiber v1.14.6
 	github.com/joho/godotenv v1.4.0
 	gorm.io/driver/postgres v1.4.5
