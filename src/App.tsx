@@ -29,7 +29,6 @@ function App() {
     fetch("http://localhost:5000/api/notes")
       .then(response => response.json())
       .then(data => {
-        // console.log({data});
         setNotes(data)
       })
     fetch("http://localhost:5000/api/tags")
@@ -57,21 +56,16 @@ function App() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log("Success:", data)
         setNotes(prevNotes => {
           return [...prevNotes, data]
         }
         )
       })
       .catch(error => {
-        console.error("Error:", error)
       })
   }
 
   function onUpdateNote( { Tags, ...data }: Note, id?: string) {
-
-    console.log("data", data);
-    
 
     fetch("http://localhost:5000/api/note/" + id, {
       method: "PUT",
@@ -82,10 +76,8 @@ function App() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log("Success:", data)
       })
       .catch(error => {
-        console.error("Error:", error)
       })
 
 
@@ -109,10 +101,8 @@ function App() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log("Success:", data)
       })
       .catch(error => {
-        console.error("Error:", error)
       })
 
     setNotes(prevNotes => {
@@ -121,13 +111,25 @@ function App() {
   }
 
 
-  // !Important: Update Tags are not working yet
-  function updateTag(label: string, id?: string) {
+  function updateTag(Name: string, id?: string) {
+
+    fetch("http://localhost:5000/api/tag/" + id, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ Name }),
+    })
+      .then(response => response.json())
+      .then(data => {
+      })
+      .catch(error => {
+      })
 
     setTags(prevTags => {
       return prevTags.map(tag => {
         if (tag.ID === id) {
-          return { ...tag, label }
+          return { ...tag, Name }
         } else {
           return tag
         }
@@ -145,10 +147,8 @@ function App() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log("Success:", data)
       })
       .catch(error => {
-        console.error("Error:", error)
       })
 
 
@@ -182,7 +182,7 @@ function App() {
           }
         />
         <Route path="/:id" element={<NoteLayout notes={notes} />}>
-          <Route index element={<Note onDelete={onDeleteNote} />} />
+          <Route index element={<Note onDelete={onDeleteNote} availableTags={tags} />} />
           <Route
             path="edit"
             element={

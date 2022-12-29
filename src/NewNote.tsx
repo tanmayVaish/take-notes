@@ -1,8 +1,8 @@
-import { Note, NoteWithoutID, Tag, TagWithoutID } from "./App"
+import { Note, Tag} from "./App"
 import { NoteForm } from "./NoteForm"
 
 type NewNoteProps = {
-  onSubmit: (data: NoteWithoutID) => void
+  onSubmit: (data: Note) => void
   availableTags: Tag[]
 }
 

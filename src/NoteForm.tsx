@@ -1,11 +1,12 @@
 import { FormEvent, useRef, useState } from "react"
-import { Button, Col, Form, Row, Stack } from "react-bootstrap"
+import { Button, Col, Container, Form, Row, Stack } from "react-bootstrap"
+import { ReactMarkdown } from "react-markdown/lib/react-markdown"
 import { Link, useNavigate } from "react-router-dom"
 import CreatableReactSelect from "react-select/creatable"
-import { Note, NoteWithoutID, Tag, TagWithoutID } from "./App"
+import { Note, Tag, } from "./App"
 
 type NoteFormProps = {
-  onSubmit: (data: NoteWithoutID) => void
+  onSubmit: (data: Note) => void
   availableTags: Tag[]
 } & Partial<Note>
 
@@ -18,8 +19,10 @@ export function NoteForm({
 }: NoteFormProps) {
   const titleRef = useRef<HTMLInputElement>(null)
   const markdownRef = useRef<HTMLTextAreaElement>(null)
-  const [selectedTags, setSelectedTags] = useState<TagWithoutID[]>(Tags)
+  const [selectedTags, setSelectedTags] = useState<Tag[]>(Tags)
   const navigate = useNavigate()
+
+  const [markdown, setMarkdown] = useState<string>(Body)
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -32,8 +35,6 @@ export function NoteForm({
 
     navigate("..")
   }
-
-  console.log({ selectedTags })
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -71,15 +72,23 @@ export function NoteForm({
             </Form.Group>
           </Col>
         </Row>
-        <Form.Group controlId="markdown">
-          <Form.Label>Body</Form.Label>
-          <Form.Control
-            defaultValue={Body}
-            required
-            as="textarea"
-            ref={markdownRef}
-            rows={15}
-          />
+            
+        <Form.Group controlId="markdown" className="d-flex">
+          <Container className="mt-4">
+            <Form.Label>Body</Form.Label>
+            <Form.Control
+              defaultValue={Body}
+              required
+              as="textarea"
+              ref={markdownRef}
+              onChange={e => setMarkdown(e.target.value)}
+              rows={15}
+            />
+          </Container>
+          <Container className="mt-4">
+            <p>Preview</p>
+            <ReactMarkdown>{markdown}</ReactMarkdown>
+          </Container>
         </Form.Group>
         <Stack direction="horizontal" gap={2} className="justify-content-end">
           <Button type="submit" variant="primary">

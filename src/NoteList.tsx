@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import {
   Badge,
   Button,
@@ -13,6 +13,7 @@ import { Link } from "react-router-dom"
 import ReactSelect from "react-select"
 import { Note, Tag } from "./App"
 import styles from "./NoteList.module.css"
+
 
 type NoteListProps = {
   availableTags: Tag[]
@@ -110,7 +111,7 @@ export function NoteList({
       <Row xs={1} sm={2} lg={3} xl={4} className="g-3">
         {filteredNotes.map(note => (
           <Col key={note.ID}>
-            <NoteCard {...note}/>
+            <NoteCard {...note} availableTags={availableTags}/>
           </Col>
         ))}
       </Row>
@@ -125,7 +126,11 @@ export function NoteList({
   )
 }
 
-function NoteCard({ ID, Title, Tags }: Note) {
+interface NoteCardProps extends Note {
+  availableTags: Tag[]
+}
+
+function NoteCard({ ID, Title, Tags, availableTags }: NoteCardProps) {
   return (
     <Card
       as={Link}
@@ -144,11 +149,18 @@ function NoteCard({ ID, Title, Tags }: Note) {
               direction="horizontal"
               className="justify-content-center flex-wrap"
             >
-              {Tags.map(tag => (
+              {Tags.map(tag => {
+                const tagName = availableTags.find(
+                  availableTag => availableTag.ID === tag.ID
+                )?.Name
+                if (!tagName) {
+                  return null
+                }
+                return (
                 <Badge className="text-truncate" key={tag.ID}>
-                  {tag.Name}
-                </Badge>
-              ))}
+                  {tagName}
+                </Badge>)
+              })}
             </Stack>
           )}
         </Stack>
@@ -164,6 +176,13 @@ function EditTagsModal({
   onDeleteTag,
   onUpdateTag,
 }: EditTagsModalProps) {
+
+  const [tags, setTags] = useState<Tag[]>([])
+
+  useEffect(() => {
+    setTags(availableTags)
+  }, [availableTags])
+
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -172,13 +191,29 @@ function EditTagsModal({
       <Modal.Body>
         <Form>
           <Stack gap={2}>
-            {availableTags.map(tag => (
+            {tags.map(tag => (
               <Row key={tag.ID}>
                 <Col>
                   <Form.Control
                     type="text"
                     value={tag.Name}
-                    onChange={e => onUpdateTag( e.target.value, tag.ID)}
+                    onBlur={e => {
+                      const previousName = availableTags.find(
+                        availableTag => availableTag.ID === tag.ID
+                      )?.Name
+
+                      if (e.target.value !== previousName) onUpdateTag(e.target.value, tag.ID)
+                    }}
+                    onChange={e => {
+                      setTags(prevTags => {
+                        return prevTags.map(prevTag => {
+                          if (prevTag.ID === tag.ID) {
+                            return { ...prevTag, Name: e.target.value }
+                          }
+                          return prevTag
+                        })
+                      })
+                    }}
                   />
                 </Col>
                 <Col xs="auto">
