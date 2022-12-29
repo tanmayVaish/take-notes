@@ -13,6 +13,7 @@ import { Link } from "react-router-dom"
 import ReactSelect from "react-select"
 import { Note, Tag } from "./App"
 import styles from "./NoteList.module.css"
+import NoteImage from "../assets/post-it.png"
 
 
 type NoteListProps = {
@@ -57,7 +58,11 @@ export function NoteList({
     <>
       <Row className="align-items-center mb-4">
         <Col>
-          <h1>Notes</h1>
+          <h1>My Notes
+            <img src={NoteImage} alt="logo" style={
+              {width: "50px", height: "50px", marginLeft: "10px"}
+            }/>
+          </h1>
         </Col>
         <Col xs="auto">
           <Stack gap={2} direction="horizontal">
