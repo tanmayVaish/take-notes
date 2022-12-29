@@ -24,6 +24,7 @@ func (r *Route) SetupRoutes(app *fiber.App) {
 	// Post and Put
 	api.Post("/note", r.createNote)
 	api.Put("/note/:id", r.updateNote)
+	api.Put("/tag/:id", r.updateTag)
 
 	// Delete
 	api.Delete("/note/:id", r.deleteNote)
@@ -167,6 +168,36 @@ func (r *Route) updateNote(c *fiber.Ctx) {
 	}
 
 	c.JSON(note)
+}
+
+func (r *Route) updateTag(c *fiber.Ctx) {
+	// Get the tag from the database and update it
+	var tag models.Tag
+	err := r.DB.First(&tag, c.Params("id"))
+	if err.Error != nil {
+		c.Status(503).Send(err.Error)
+		return
+	}
+
+	var input struct {
+		Name string
+	}
+
+	if err := c.BodyParser(&input); err != nil {
+		c.Status(503).Send(err)
+		return
+	}
+
+	if input.Name != "" {
+		tag.Name = input.Name
+	}
+
+	if err := r.DB.Save(&tag).Error; err != nil {
+		c.Status(503).Send(err)
+		return
+	}
+
+	c.JSON(tag)
 }
 
 func (r *Route) deleteNote(c *fiber.Ctx) {
