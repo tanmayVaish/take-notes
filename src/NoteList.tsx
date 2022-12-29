@@ -11,18 +11,12 @@ import {
 } from "react-bootstrap"
 import { Link } from "react-router-dom"
 import ReactSelect from "react-select"
-import { Tag } from "./App"
+import { Note, Tag } from "./App"
 import styles from "./NoteList.module.css"
-
-type SimplifiedNote = {
-  tags: Tag[]
-  title: string
-  id: string
-}
 
 type NoteListProps = {
   availableTags: Tag[]
-  notes: SimplifiedNote[]
+  notes: Note[]
   onDeleteTag: (id: string) => void
   onUpdateTag: (id: string, label: string) => void
 }
@@ -49,10 +43,10 @@ export function NoteList({
     return notes.filter(note => {
       return (
         (title === "" ||
-          note.title.toLowerCase().includes(title.toLowerCase())) &&
+          note.Title.toLowerCase().includes(title.toLowerCase())) &&
         (selectedTags.length === 0 ||
           selectedTags.every(tag =>
-            note.tags.some(noteTag => noteTag.id === tag.id)
+            note.Tags.some(noteTag => noteTag.ID === tag.ID)
           ))
       )
     })
@@ -95,15 +89,15 @@ export function NoteList({
               <Form.Label>Tags</Form.Label>
               <ReactSelect
                 value={selectedTags.map(tag => {
-                  return { label: tag.label, value: tag.id }
+                  return { label: tag.Name, value: tag}
                 })}
                 options={availableTags.map(tag => {
-                  return { label: tag.label, value: tag.id }
+                  return { label: tag.Name, value: tag}
                 })}
                 onChange={tags => {
                   setSelectedTags(
                     tags.map(tag => {
-                      return { label: tag.label, id: tag.value }
+                      return tag.value
                     })
                   )
                 }}
@@ -115,8 +109,8 @@ export function NoteList({
       </Form>
       <Row xs={1} sm={2} lg={3} xl={4} className="g-3">
         {filteredNotes.map(note => (
-          <Col key={note.id}>
-            <NoteCard id={note.id} title={note.title} tags={note.tags} />
+          <Col key={note.ID}>
+            <NoteCard {...note}/>
           </Col>
         ))}
       </Row>
@@ -131,11 +125,11 @@ export function NoteList({
   )
 }
 
-function NoteCard({ id, title, tags }: SimplifiedNote) {
+function NoteCard({ ID, Title, Tags }: Note) {
   return (
     <Card
       as={Link}
-      to={`/${id}`}
+      to={`/${ID}`}
       className={`h-100 text-reset text-decoration-none ${styles.card}`}
     >
       <Card.Body>
@@ -143,16 +137,16 @@ function NoteCard({ id, title, tags }: SimplifiedNote) {
           gap={2}
           className="align-items-center justify-content-center h-100"
         >
-          <span className="fs-5">{title}</span>
-          {tags.length > 0 && (
+          <span className="fs-5">{Title}</span>
+          {Tags.length > 0 && (
             <Stack
               gap={1}
               direction="horizontal"
               className="justify-content-center flex-wrap"
             >
-              {tags.map(tag => (
-                <Badge className="text-truncate" key={tag.id}>
-                  {tag.label}
+              {Tags.map(tag => (
+                <Badge className="text-truncate" key={tag.ID}>
+                  {tag.Name}
                 </Badge>
               ))}
             </Stack>
@@ -179,17 +173,17 @@ function EditTagsModal({
         <Form>
           <Stack gap={2}>
             {availableTags.map(tag => (
-              <Row key={tag.id}>
+              <Row key={tag.ID}>
                 <Col>
                   <Form.Control
                     type="text"
-                    value={tag.label}
-                    onChange={e => onUpdateTag(tag.id, e.target.value)}
+                    value={tag.Name}
+                    onChange={e => onUpdateTag(tag.ID, e.target.value)}
                   />
                 </Col>
                 <Col xs="auto">
                   <Button
-                    onClick={() => onDeleteTag(tag.id)}
+                    onClick={() => onDeleteTag(tag.ID)}
                     variant="outline-danger"
                   >
                     &times;
