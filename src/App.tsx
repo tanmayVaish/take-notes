@@ -101,12 +101,29 @@ function App() {
   }
 
   function onDeleteNote(id?: string) {
+    fetch("http://localhost:5000/api/note/" + id, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Success:", data)
+      })
+      .catch(error => {
+        console.error("Error:", error)
+      })
+
     setNotes(prevNotes => {
       return prevNotes.filter(note => note.ID !== id)
     })
   }
 
+
+  // !Important: Update Tags are not working yet
   function updateTag(label: string, id?: string) {
+
     setTags(prevTags => {
       return prevTags.map(tag => {
         if (tag.ID === id) {
@@ -119,9 +136,26 @@ function App() {
   }
 
   function deleteTag(id?: string) {
+
+    fetch("http://localhost:5000/api/tag/" + id, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Success:", data)
+      })
+      .catch(error => {
+        console.error("Error:", error)
+      })
+
+
     setTags(prevTags => {
       return prevTags.filter(tag => tag.ID !== id)
     })
+
   }
 
   return (
