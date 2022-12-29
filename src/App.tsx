@@ -39,21 +39,29 @@ function App() {
       })
   }, [])
 
-  console.log({ notes, tags })
-
   // const notesWithTags = useMemo(() => {
   //   return notes.map(note => {
   //     return { ...note, tags: tags.filter(tag => note.id.includes(tag.id)) }
   //   })
   // }, [notes, tags])
 
-  function onCreateNote({ Tags, ...data }: Note) {
-    // setNotes(prevNotes => {
-    //   return [
-    //     ...prevNotes,
-    //     { ...data, id: uuidV4(), tagIds: tags.map(tag => tag.id) },
-    //   ]
-    // })
+  function onCreateNote(data : Note) {
+    
+    // Post request to backend "http://localhost:5000/api/note"
+    fetch("http://localhost:5000/api/note", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Success:", data)
+      })
+      .catch(error => {
+        console.error("Error:", error)
+      })
   }
 
   function onUpdateNote(id: string, { Tags, ...data }: Note) {
