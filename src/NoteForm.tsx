@@ -2,18 +2,15 @@ import { FormEvent, useRef, useState } from "react"
 import { Button, Col, Form, Row, Stack } from "react-bootstrap"
 import { Link, useNavigate } from "react-router-dom"
 import CreatableReactSelect from "react-select/creatable"
-import { Note, Tag } from "./App"
-import { v4 as uuidV4 } from "uuid"
+import { Note, NoteWithoutID, Tag, TagWithoutID } from "./App"
 
 type NoteFormProps = {
-  onSubmit: (data: Note) => void
-  onAddTag: (tag: Tag) => void
+  onSubmit: (data: NoteWithoutID) => void
   availableTags: Tag[]
 } & Partial<Note>
 
 export function NoteForm({
   onSubmit,
-  onAddTag,
   availableTags,
   Title = "",
   Body = "",
@@ -21,14 +18,13 @@ export function NoteForm({
 }: NoteFormProps) {
   const titleRef = useRef<HTMLInputElement>(null)
   const markdownRef = useRef<HTMLTextAreaElement>(null)
-  const [selectedTags, setSelectedTags] = useState<Tag[]>(Tags)
+  const [selectedTags, setSelectedTags] = useState<TagWithoutID[]>(Tags)
   const navigate = useNavigate()
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
 
     onSubmit({
-      ID: uuidV4(),
       Title: titleRef.current!.value,
       Body: markdownRef.current!.value,
       Tags: selectedTags,
@@ -54,20 +50,19 @@ export function NoteForm({
               <Form.Label>Tags</Form.Label>
               <CreatableReactSelect
                 onCreateOption={label => {
-                  const newTag = { ID: uuidV4(), Name: label }
-                  onAddTag(newTag)
+                  const newTag = { Name: label }
                   setSelectedTags(prev => [...prev, newTag])
                 }}
                 value={selectedTags.map(tag => {
-                  return { label: tag.Name, value: tag.ID }
+                  return { label: tag.Name }
                 })}
                 options={availableTags.map(tag => {
-                  return { label: tag.Name, value: tag.ID }
+                  return { label: tag.Name }
                 })}
                 onChange={tags => {
                   setSelectedTags(
                     tags.map(tag => {
-                      return { Name: tag.label, ID: tag.value }
+                      return { Name: tag.label }
                     })
                   )
                 }}

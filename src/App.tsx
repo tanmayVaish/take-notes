@@ -9,14 +9,14 @@ import { Note } from "./Note"
 import { EditNote } from "./EditNote"
 
 export interface Note {
-  ID: string
+  ID?: string 
   Title: string
   Body: string
   Tags: Tag[]
 }
 
 export interface Tag {
-  ID: string
+  ID?: string
   Name: string
 }
 
@@ -58,13 +58,37 @@ function App() {
       .then(response => response.json())
       .then(data => {
         console.log("Success:", data)
+        setNotes(prevNotes => {
+          return [...prevNotes, data]
+        }
+        )
       })
       .catch(error => {
         console.error("Error:", error)
       })
   }
 
-  function onUpdateNote(id: string, { Tags, ...data }: Note) {
+  function onUpdateNote( { Tags, ...data }: Note, id?: string) {
+
+    console.log("data", data);
+    
+
+    fetch("http://localhost:5000/api/note/" + id, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Success:", data)
+      })
+      .catch(error => {
+        console.error("Error:", error)
+      })
+
+
     setNotes(prevNotes => {
       return prevNotes.map(note => {
         if (note.ID === id) {
@@ -76,17 +100,13 @@ function App() {
     })
   }
 
-  function onDeleteNote(id: string) {
+  function onDeleteNote(id?: string) {
     setNotes(prevNotes => {
       return prevNotes.filter(note => note.ID !== id)
     })
   }
 
-  function addTag(tag: Tag) {
-    setTags(prev => [...prev, tag])
-  }
-
-  function updateTag(id: string, label: string) {
+  function updateTag(label: string, id?: string) {
     setTags(prevTags => {
       return prevTags.map(tag => {
         if (tag.ID === id) {
@@ -98,7 +118,7 @@ function App() {
     })
   }
 
-  function deleteTag(id: string) {
+  function deleteTag(id?: string) {
     setTags(prevTags => {
       return prevTags.filter(tag => tag.ID !== id)
     })
@@ -123,7 +143,6 @@ function App() {
           element={
             <NewNote
               onSubmit={onCreateNote}
-              onAddTag={addTag}
               availableTags={tags}
             />
           }
@@ -135,7 +154,6 @@ function App() {
             element={
               <EditNote
                 onSubmit={onUpdateNote}
-                onAddTag={addTag}
                 availableTags={tags}
               />
             }

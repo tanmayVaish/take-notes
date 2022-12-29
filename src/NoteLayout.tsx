@@ -7,7 +7,8 @@ interface NoteLayoutProps {
 
 export function NoteLayout({notes} : NoteLayoutProps) {
   const { id } = useParams()
-  const note = notes.find(n => n.ID === id)
+
+  const note = notes.find(note => note.ID == id)
 
   if (note == null) return <Navigate to="/" replace />
 

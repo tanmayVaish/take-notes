@@ -17,16 +17,16 @@ import styles from "./NoteList.module.css"
 type NoteListProps = {
   availableTags: Tag[]
   notes: Note[]
-  onDeleteTag: (id: string) => void
-  onUpdateTag: (id: string, label: string) => void
+  onDeleteTag: (id?: string) => void
+  onUpdateTag: ( label: string, id?: string) => void
 }
 
 type EditTagsModalProps = {
   show: boolean
   availableTags: Tag[]
   handleClose: () => void
-  onDeleteTag: (id: string) => void
-  onUpdateTag: (id: string, label: string) => void
+  onDeleteTag: (id?: string) => void
+  onUpdateTag: (label: string, id?: string ) => void
 }
 
 export function NoteList({
@@ -178,7 +178,7 @@ function EditTagsModal({
                   <Form.Control
                     type="text"
                     value={tag.Name}
-                    onChange={e => onUpdateTag(tag.ID, e.target.value)}
+                    onChange={e => onUpdateTag( e.target.value, tag.ID)}
                   />
                 </Col>
                 <Col xs="auto">

@@ -15,12 +15,12 @@ export function Note({ onDelete }: NoteProps) {
     <>
       <Row className="align-items-center mb-4">
         <Col>
-          <h1>{note.title}</h1>
-          {note.tags.length > 0 && (
+          <h1>{note.Title}</h1>
+          {note.Tags.length > 0 && (
             <Stack gap={1} direction="horizontal" className="flex-wrap">
-              {note.tags.map(tag => (
-                <Badge className="text-truncate" key={tag.id}>
-                  {tag.label}
+              {note.Tags.map(tag => (
+                <Badge className="text-truncate" key={tag.ID}>
+                  {tag.Name}
                 </Badge>
               ))}
             </Stack>
@@ -28,12 +28,12 @@ export function Note({ onDelete }: NoteProps) {
         </Col>
         <Col xs="auto">
           <Stack gap={2} direction="horizontal">
-            <Link to={`/${note.id}/edit`}>
+            <Link to={`/${note.ID}/edit`}>
               <Button variant="primary">Edit</Button>
             </Link>
             <Button
               onClick={() => {
-                onDelete(note.id)
+                onDelete(note.ID)
                 navigate("/")
               }}
               variant="outline-danger"
@@ -46,7 +46,7 @@ export function Note({ onDelete }: NoteProps) {
           </Stack>
         </Col>
       </Row>
-      <ReactMarkdown>{note.markdown}</ReactMarkdown>
+      <ReactMarkdown>{note.Body}</ReactMarkdown>
     </>
   )
 }
