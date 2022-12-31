@@ -148,7 +148,7 @@ function NoteCard({ ID, Title, Tags, availableTags }: NoteCardProps) {
           className="align-items-center justify-content-center h-100"
         >
           <span className="fs-5">{Title}</span>
-          {Tags.length > 0 && (
+          {Tags?.length > 0 && (
             <Stack
               gap={1}
               direction="horizontal"
