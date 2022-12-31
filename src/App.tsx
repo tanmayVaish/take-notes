@@ -93,6 +93,15 @@ function App() {
             }
           })
         })
+        if(data.Tags) {
+          setTags(prevTags => {
+            return [...prevTags, ...data.Tags ]
+          })
+        } else {
+          setTags(prevTags => {
+            return [...prevTags]
+          })
+        }
       })
       .catch(error => {
       })
