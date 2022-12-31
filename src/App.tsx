@@ -56,7 +56,6 @@ function App() {
     })
       .then(response => response.json())
       .then(data => {
-      console.log(data)
         setNotes(prevNotes => {
           return [...prevNotes, data]
         })
@@ -76,6 +75,7 @@ function App() {
 
   function onUpdateNote( data : Note, id?: string) {
 
+    console.log("before", data)
 
     fetch("http://localhost:5000/api/note/" + id, {
       method: "PUT",
@@ -86,6 +86,7 @@ function App() {
     })
       .then(response => response.json())
       .then(data => {
+        console.log("after", data)
         setNotes(prevNotes => {
           return prevNotes.map(note => {
             if (note.ID === id) {

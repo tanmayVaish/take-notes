@@ -27,8 +27,6 @@ export function NoteForm({
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
 
-    console.log(selectedTags,"selectedTags");
-    
     onSubmit({
       Title: titleRef.current!.value,
       Body: markdownRef.current!.value,
@@ -57,15 +55,15 @@ export function NoteForm({
                   setSelectedTags(prev => [...prev, newTag])
                 }}
                 value={selectedTags.map(tag => {
-                  return { label: tag.Name }
+                  return { label: tag.Name, value: tag }
                 })}
                 options={availableTags.map(tag => {
-                  return { label: tag.Name }
+                  return { label: tag.Name, value: tag }
                 })}
                 onChange={tags => {
                   setSelectedTags(
                     tags.map(tag => {
-                      return { Name: tag.label }
+                      return tag.value
                     })
                   )
                 }}
