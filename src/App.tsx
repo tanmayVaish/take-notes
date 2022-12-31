@@ -26,12 +26,12 @@ function App() {
 
   useEffect(() => {
     // fetch using axios notes and tags from backend
-    fetch("http://localhost:5000/api/notes")
+    fetch("/api/notes")
       .then(response => response.json())
       .then(data => {
         setNotes(data)
       })
-    fetch("http://localhost:5000/api/tags")
+    fetch("/api/tags")
       .then(response => response.json())
       .then(data => {
         setTags(data)
@@ -46,8 +46,8 @@ function App() {
 
   function onCreateNote(data : Note) {
     
-    // Post request to backend "http://localhost:5000/api/note"
-    fetch("http://localhost:5000/api/note", {
+    // Post request to backend "/api/note"
+    fetch("/api/note", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -68,7 +68,7 @@ function App() {
   function onUpdateNote( data : Note, id?: string) {
 
 
-    fetch("http://localhost:5000/api/note/" + id, {
+    fetch("/api/note/" + id, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -93,7 +93,7 @@ function App() {
   }
 
   function onDeleteNote(id?: string) {
-    fetch("http://localhost:5000/api/note/" + id, {
+    fetch("/api/note/" + id, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -113,7 +113,7 @@ function App() {
 
   function updateTag(Name: string, id?: string) {
 
-    fetch("http://localhost:5000/api/tag/" + id, {
+    fetch("/api/tag/" + id, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -139,7 +139,7 @@ function App() {
 
   function deleteTag(id?: string) {
 
-    fetch("http://localhost:5000/api/tag/" + id, {
+    fetch("/api/tag/" + id, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
