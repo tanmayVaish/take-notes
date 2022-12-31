@@ -65,7 +65,8 @@ function App() {
       })
   }
 
-  function onUpdateNote( { Tags, ...data }: Note, id?: string) {
+  function onUpdateNote( data : Note, id?: string) {
+
 
     fetch("http://localhost:5000/api/note/" + id, {
       method: "PUT",
@@ -76,20 +77,19 @@ function App() {
     })
       .then(response => response.json())
       .then(data => {
+        setNotes(prevNotes => {
+          return prevNotes.map(note => {
+            if (note.ID === id) {
+              return { ...note, ...data }
+            } else {
+              return note
+            }
+          })
+        })
       })
       .catch(error => {
       })
 
-
-    setNotes(prevNotes => {
-      return prevNotes.map(note => {
-        if (note.ID === id) {
-          return { ...note, ...data, Tags: Tags }
-        } else {
-          return note
-        }
-      })
-    })
   }
 
   function onDeleteNote(id?: string) {

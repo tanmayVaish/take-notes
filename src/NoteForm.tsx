@@ -27,6 +27,8 @@ export function NoteForm({
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
 
+    console.log(selectedTags,"selectedTags");
+    
     onSubmit({
       Title: titleRef.current!.value,
       Body: markdownRef.current!.value,
