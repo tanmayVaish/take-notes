@@ -18,7 +18,7 @@ export function Note({ onDelete, availableTags }: NoteProps) {
       <Row className="align-items-center mb-4">
         <Col>
           <h1>{note.Title}</h1>
-          {note.Tags.length > 0 && (
+          {note.Tags?.length > 0 && (
             <Stack gap={1} direction="horizontal" className="flex-wrap">
               {note.Tags.map(tag => {
                 const tagName = availableTags.find(
