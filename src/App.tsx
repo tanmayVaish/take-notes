@@ -8,6 +8,8 @@ import { NoteLayout } from "./NoteLayout"
 import { Note } from "./Note"
 import { EditNote } from "./EditNote"
 
+import dotenv from "dotenv"
+
 export interface Note {
   ID?: string 
   Title: string
@@ -23,6 +25,8 @@ export interface Tag {
 function App() {
   const [notes, setNotes] = useState<Note[]>([])
   const [tags, setTags] = useState<Tag[]>([])
+
+  dotenv.config()
 
   useEffect(() => {
     // fetch using axios notes and tags from backend
