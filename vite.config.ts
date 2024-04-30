@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://takenotes-ml.netlify.app/api',
+        target: 'https://takenotes-ml.netlify.app:5000',
         changeOrigin: true,
       },
     }
